@@ -15,6 +15,19 @@ suppressWarnings(library(rvest))
 
 # first preference vote for seat and party of interest
 
+# set websites from AEC
+
+seatsite2016="https://tallyroom.aec.gov.au/HouseDivisionalResults-24310.htm"
+
+#https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
+
+prefix2016 <- "https://tallyroom.aec.gov.au/"
+  
+#  "https://results.aec.gov.au/20499/Website/"
+
+
+# First preference vote per booth
+# 2019 AEC didn't provide this data on the web
 GetBoothFP <- function(seatofinterest, partyofinterest)
 {
   # re-code thepartyofinterest to conform with AEC names
@@ -22,7 +35,7 @@ GetBoothFP <- function(seatofinterest, partyofinterest)
   if(partyofinterest=="ALP") partyofinterest <-"Australian Labor Party"
   if(partyofinterest=="Lib") partyofinterest <-"Liberals"
   
-  seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
+  #seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
   html2016 <- read_html(seatsite2016)
   
   seats2016_html <- html_nodes(html2016,'.filterDivision')
@@ -34,7 +47,7 @@ GetBoothFP <- function(seatofinterest, partyofinterest)
     html_nodes(".filterDivision a") %>% # get the info for each division
     html_attr("href")
   
-  prefix2016 <- "https://results.aec.gov.au/20499/Website/"
+  #prefix2016 <- "https://results.aec.gov.au/20499/Website/"
   
   seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
   
@@ -97,10 +110,10 @@ GetBoothFP <- function(seatofinterest, partyofinterest)
 }
 
 # two-party prefered by booth for seat of interest function
-
+# 2019 election AEC didn't pubish these results on the website
 GetBooth2CP <- function(seatofinterest)
 {
-  seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
+  #seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
   html2016 <- read_html(seatsite2016)
   
   seats2016_html <- html_nodes(html2016,'.filterDivision')
@@ -112,7 +125,7 @@ GetBooth2CP <- function(seatofinterest)
     html_nodes(".filterDivision a") %>% # get the info for each division
     html_attr("href")
   
-  prefix2016 <- "https://results.aec.gov.au/20499/Website/"
+  #prefix2016 <- "https://results.aec.gov.au/20499/Website/"
   
   seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
   
@@ -145,6 +158,105 @@ GetBooth2CP <- function(seatofinterest)
   return(twocp2016)
 }
 
+
+# returns primary vote for all candidates at a seat
+GetAllCP <- function(seatofinterest)
+{
+  #seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
+  html2016 <- read_html(seatsite2016)
+  
+  seats2016_html <- html_nodes(html2016,'.filterDivision')
+  seats2016_html
+  seattxt2016 <- html_text(seats2016_html)
+  #seatlinks2016 <- html_attrs(seats2016_html, "href")
+  
+  seat.links2016 <- html2016 %>% # feed `html2016` to the next step
+    html_nodes(".filterDivision a") %>% # get the info for each division
+    html_attr("href")
+  
+  #prefix2016 <- "https://results.aec.gov.au/20499/Website/"
+  
+  seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
+  
+  if(seatofinterest=="Macnamara"){
+    seatID<- which(seattxt2016=="Melbourne Ports")
+  } else
+  {
+    SeatID <- which(seattxt2016==seatofinterest)
+  }
+  # from 2019 Melb Ports is named Macnamara, Check for Batman too?
+  
+  seat2016 <- seat.links2016[SeatID]  
+  
+  twocp2016 <- seat2016 %>%
+    read_html() %>%
+    html_nodes(xpath='//*[@id="fp"]')  %>%  
+    html_table(header=TRUE, fill=TRUE)  # extracts the 2CP votes for each booth as a table
+  
+  twocp2016 <- twocp2016[[1]]  # there should be only one element - get that table
+  
+  # # Get surnames of candidate
+  # Cand1 <- sapply(strsplit(colnames(twocp2016)[3], ","), "[", 1)
+  # Cand2 <- sapply(strsplit(colnames(twocp2016)[5], ","), "[", 1)
+  # 
+  # twocp2016 <- twocp2016[2:length(twocp2016$`Polling place`), ] # chop off the header line
+  # 
+  # # rename the columns to something more succinct
+  # colnames(twocp2016) <- c("PollingPlace", "Formal", paste(Cand1,"Votes",sep=""), paste(Cand1,"%",sep=""), paste(Cand2,"Votes",sep=""), paste(Cand2,"%",sep=""), "Swing")
+  # 
+  return(twocp2016)
+}
+
+# returns 2-party preferred table for a seat
+
+Get2CP <- function(seatofinterest)
+{
+  #seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
+  html2016 <- read_html(seatsite2016)
+  
+  seats2016_html <- html_nodes(html2016,'.filterDivision')
+  seats2016_html
+  seattxt2016 <- html_text(seats2016_html)
+  #seatlinks2016 <- html_attrs(seats2016_html, "href")
+  
+  seat.links2016 <- html2016 %>% # feed `html2016` to the next step
+    html_nodes(".filterDivision a") %>% # get the info for each division
+    html_attr("href")
+  
+  #prefix2016 <- "https://results.aec.gov.au/20499/Website/"
+  
+  seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
+  
+  if(seatofinterest=="Macnamara"){
+    seatID<- which(seattxt2016=="Melbourne Ports")
+  } else
+  {
+    SeatID <- which(seattxt2016==seatofinterest)
+  }
+  # from 2019 Melb Ports is named Macnamara, Check for Batman too?
+  
+  seat2016 <- seat.links2016[SeatID]  
+  
+  twocp2016 <- seat2016 %>%
+    read_html() %>%
+    html_nodes(xpath='//*[@id="tcp"]')  %>%  
+    html_table(header=TRUE, fill=TRUE)  # extracts the 2CP votes for each booth as a table
+  
+  twocp2016 <- twocp2016[[1]]  # there should be only one element - get that table
+  
+  # # Get surnames of candidate
+  # Cand1 <- sapply(strsplit(colnames(twocp2016)[3], ","), "[", 1)
+  # Cand2 <- sapply(strsplit(colnames(twocp2016)[5], ","), "[", 1)
+  # 
+  # twocp2016 <- twocp2016[2:length(twocp2016$`Polling place`), ] # chop off the header line
+  # 
+  # # rename the columns to something more succinct
+  # colnames(twocp2016) <- c("PollingPlace", "Formal", paste(Cand1,"Votes",sep=""), paste(Cand1,"%",sep=""), paste(Cand2,"Votes",sep=""), paste(Cand2,"%",sep=""), "Swing")
+  # 
+  return(twocp2016)
+}
+
+
 ######################################################################################################################################################################
 #Usage
 ######################################################################################################################################################################
@@ -153,6 +265,9 @@ cp2.warringah <- GetBooth2CP("Warringah")
 
 cp2.Macquarie <- GetBooth2CP("Macquarie")
 booth.macq <- GetBoothFP("Macquarie", "Labor")
+
+Get2CP("Macquarie")
+GetAllCP("Macquarie")
 
 # Some options you might like:
 
