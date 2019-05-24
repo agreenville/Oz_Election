@@ -147,13 +147,13 @@ macq.win.plot <- ggmap(map.pen.8) +
 # Leading party per booth - two party preferred
 wah.win.plot <- ggmap(map.pen.9) +
   geom_point(data = wah, aes(x = Longitude, y = Latitude, colour=winning),
-             size = 2.5, alpha = 1, inherit.aes = FALSE) +
+             size = 3, alpha = 1, inherit.aes = FALSE) +
   scale_color_manual(values = c("#E7B800", "blue"))+
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
-  scale_x_continuous(limits = c(151.1,151.4), expand = c(0, 0)) + 
-  scale_y_continuous(limits = c(-33.9, -33.65), expand = c(0, 0))
+  scale_x_continuous(limits = c(151.155,151.4), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
 
 
 # Swing by booth
@@ -180,13 +180,13 @@ macq.swing.plot <- ggmap(map.pen.8) +
 
 wah.swing.plot <- ggmap(map.pen.9) +
   geom_point(data = wah, aes(x = Longitude, y = Latitude, colour=swing.to),
-             size = log(wah$swing.abs), alpha = 0.5, inherit.aes = FALSE) +
+             size = (wah$swing.abs)/5, alpha = 0.5, inherit.aes = FALSE) +
   scale_color_manual(values = c("#E7B800", "blue"))+
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
-  scale_x_continuous(limits = c(151.1,151.4), expand = c(0, 0)) + 
-  scale_y_continuous(limits = c(-33.9, -33.65), expand = c(0, 0))
+  scale_x_continuous(limits = c(151.155,151.4), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
 
 ################################################################################
 # saving out plots
