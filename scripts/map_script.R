@@ -16,6 +16,8 @@ library(rgdal)
 
 # need API key to use google maps
 # load api key
+# need to obtain an API key from Google. Go to the registration page
+# and sign up for a billing account 
 # key ="[your API key]"
 
 Sys.getenv("key")
@@ -152,9 +154,9 @@ macq.swing.plot <- ggmap(map.pen.8) +
 ################################################################################
 # saving out plots
 ###############################################################################
-# ggsave(filename = "output/macq.win.png", plot = macq.win.plot,
+# ggsave(filename = "output/macq-win.png", plot = macq.win.plot,
 #        dpi=300)
 # 
-# ggsave(filename = "output/macq.swing.png", plot = macq.swing.plot,
+# ggsave(filename = "output/macq-swing.png", plot = macq.swing.plot,
 #        dpi=300)
 
