@@ -41,6 +41,14 @@ election.bound <- readOGR(dsn="data/national-esri-fe2019/COM_ELB_region.shp", la
 # not cp2.Macquarie is from Michaels election script
 macq <- inner_join(cp2.Macquarie.24, stns, by = c("PollingPlace" = "PollingPlaceNm"))
 
+wah <- cp2.warringah.24 %>% inner_join(stns, by = c("PollingPlace" = "PollingPlaceNm")) %>%
+         mutate_at(c('ABBOTT%', 'STEGGALL%', 'Swing'), as.numeric) %>%
+        filter(DivisionNm=='Warringah') %>%
+        mutate(winning = ifelse(`ABBOTT%` > `STEGGALL%`, "LNP", "Ind" )) %>%
+        mutate(swing.to = ifelse(Swing<0, "Ind", "LNP")) %>%
+        mutate(swing.abs = abs(Swing))
+
+
 # convert to numeric
 macq$`TEMPLEMAN%` <- as.numeric(macq$`TEMPLEMAN%`)
 macq$`RICHARDS%` <- as.numeric(macq$`RICHARDS%`)
@@ -78,6 +86,13 @@ map.pen.8 <- get_map(location="Penrith, Australia",
                      source= "google",
                      maptype = "terrain", crop=FALSE,
                      zoom=8)
+
+map.wah.10 <- get_map(location="Manly, Australia",
+                     source= "google",
+                     maptype = "terrain", crop=FALSE,
+                     zoom=10)
+
+
 # View maps
 ggmap(map.pen.10)
 ggmap(map.pen.9)
@@ -128,6 +143,18 @@ macq.win.plot <- ggmap(map.pen.8) +
   scale_x_continuous(limits = c(149.9,151.5), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-34, -32.9), expand = c(0, 0))
 
+# using AEC shapfile
+# Leading party per booth - two party preferred
+wah.win.plot <- ggmap(map.pen.9) +
+  geom_point(data = wah, aes(x = Longitude, y = Latitude, colour=winning),
+             size = 2.5, alpha = 1, inherit.aes = FALSE) +
+  scale_color_manual(values = c("#E7B800", "blue"))+
+  geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
+               data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
+  theme_map() + coord_equal() + 
+  scale_x_continuous(limits = c(151.1,151.4), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.9, -33.65), expand = c(0, 0))
+
 
 # Swing by booth
 # Using eechidna package election boundaries
@@ -150,6 +177,16 @@ macq.swing.plot <- ggmap(map.pen.8) +
   theme_map() + coord_equal() + 
   scale_x_continuous(limits = c(149.9,151.5), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-34, -32.9), expand = c(0, 0))
+
+wah.swing.plot <- ggmap(map.pen.9) +
+  geom_point(data = wah, aes(x = Longitude, y = Latitude, colour=swing.to),
+             size = log(wah$swing.abs), alpha = 0.5, inherit.aes = FALSE) +
+  scale_color_manual(values = c("#E7B800", "blue"))+
+  geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
+               data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
+  theme_map() + coord_equal() + 
+  scale_x_continuous(limits = c(151.1,151.4), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.9, -33.65), expand = c(0, 0))
 
 ################################################################################
 # saving out plots
