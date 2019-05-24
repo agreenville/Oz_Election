@@ -20,8 +20,6 @@ library(rgdal)
 # and sign up for a billing account 
 # key ="[your API key]"
 
-Sys.getenv("key")
-
 register_google(key = Sys.getenv("key"))
 
 
@@ -87,16 +85,17 @@ map.pen.8 <- get_map(location="Penrith, Australia",
                      maptype = "terrain", crop=FALSE,
                      zoom=8)
 
-map.wah.10 <- get_map(location="Manly, Australia",
+map.wah.12 <- get_map(location="Manly, Australia",
                      source= "google",
                      maptype = "terrain", crop=FALSE,
-                     zoom=10)
+                     zoom=12)
 
 
 # View maps
 ggmap(map.pen.10)
 ggmap(map.pen.9)
 ggmap(map.pen.8)
+ggmap(map.wah.12)
 
 # Convert for plotting in ggplt
 map.pen.data.9 <- ggmap(map.pen.9)
@@ -145,7 +144,7 @@ macq.win.plot <- ggmap(map.pen.8) +
 
 # using AEC shapfile
 # Leading party per booth - two party preferred
-wah.win.plot <- ggmap(map.pen.9) +
+wah.win.plot <- ggmap(map.wah.12) +
   geom_point(data = wah, aes(x = Longitude, y = Latitude, colour=winning),
              size = 3, alpha = 1, inherit.aes = FALSE) +
   scale_color_manual(values = c("#E7B800", "blue"))+
@@ -178,15 +177,15 @@ macq.swing.plot <- ggmap(map.pen.8) +
   scale_x_continuous(limits = c(149.9,151.5), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-34, -32.9), expand = c(0, 0))
 
-wah.swing.plot <- ggmap(map.pen.9) +
+wah.swing.plot <- ggmap(map.wah.12) +
   geom_point(data = wah, aes(x = Longitude, y = Latitude, colour=swing.to),
              size = (wah$swing.abs)/5, alpha = 0.5, inherit.aes = FALSE) +
   scale_color_manual(values = c("#E7B800", "blue"))+
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
-  scale_x_continuous(limits = c(151.155,151.4), expand = c(0, 0)) + 
-  scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
+   scale_x_continuous(limits = c(151.155,151.4), expand = c(0, 0)) + 
+   scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
 
 ################################################################################
 # saving out plots
@@ -195,5 +194,11 @@ wah.swing.plot <- ggmap(map.pen.9) +
 #        dpi=300)
 # 
 # ggsave(filename = "output/macq-swing.png", plot = macq.swing.plot,
+#        dpi=300)
+
+# ggsave(filename = "output/wah-win.png", plot = wah.win.plot,
+#               dpi=300)
+# 
+# ggsave(filename = "output/wah-swing.png", plot = wah.swing.plot,
 #        dpi=300)
 
