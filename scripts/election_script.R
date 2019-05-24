@@ -79,7 +79,7 @@ GetBoothFP <- function(seatofinterest, partyofinterest)
     fp2016 <- firstprefs.links2016[i] %>%
       read_html() %>%
       html_nodes(xpath='//*[@id="fp"]') %>%    
-      html_table()  # extracts the first prefs votes for the booth as a table
+      html_table(header=TRUE, fill=TRUE)  # extracts the first prefs votes for the booth as a table
     
     fp2016 <- fp2016[[1]]  # only has one element
     
@@ -260,10 +260,11 @@ Get2CP <- function(seatofinterest)
 ######################################################################################################################################################################
 #Usage
 ######################################################################################################################################################################
-cp2.warringah <- GetBooth2CP("Warringah")
+cp2.warringah.24 <- GetBooth2CP("Warringah")
 
 
-cp2.Macquarie <- GetBooth2CP("Macquarie")
+cp2.Macquarie.24 <- GetBooth2CP("Macquarie")
+
 booth.macq <- GetBoothFP("Macquarie", "Labor")
 
 Get2CP("Macquarie")
