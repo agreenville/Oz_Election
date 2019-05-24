@@ -30,10 +30,11 @@ data("nat_map16")
 data("nat_data16")
 
 # read in pollingplace location data
-stns <- read.csv("data/GeneralPollingPlacesDownload-20499.csv",
+stns <- read.csv("data/GeneralPollingPlacesDownload-24310.csv",
                  header = TRUE)
 # read in AEC election division boundaries
 election.bound <- readOGR(dsn="data/national-esri-fe2019/COM_ELB_region.shp", layer="COM_ELB_region")
+
 
 # Join election results with polling place data
 # not cp2.Macquarie is from Michaels election script
@@ -59,6 +60,26 @@ macq <- macq %>% filter(DivisionNm =="Macquarie") %>%
   mutate(swing.to = ifelse(Swing<0, "LNP", "Labor")) %>%
   mutate(swing.abs = abs(Swing))
 
+# all booths
+# create list of seats
+seat.names <- unique(stns$DivisionNm)
+
+cp2.all.booths <- list()
+for(i in 1:length(seat.names)){
+  cp2.all.booths[[i]] <- GetBooth2CP(seat.names[i])
+
+}
+names(cp2.all.booths) <- seat.names
+
+all.booths <- read.csv("data/HouseTppByPollingPlaceDownload-24310.csv", header = TRUE)
+
+all.booths.loc <- all.booths %>% inner_join(stns, by = 'PollingPlaceID') %>%
+   mutate(winning = ifelse(Liberal.National.Coalition.Percentage == 0, 
+    "Ind",      
+     ifelse(Liberal.National.Coalition.Percentage > Australian.Labor.Party.Percentage, "LNP", "Labor" )
+   ))
+     
+     
 # viewing boundaries for Australia from package data
 ggplot(data = nat_data16, aes(map_id = id)) + 
   geom_map(map = nat_map16, fill = "grey90", colour = "white") +
@@ -67,6 +88,15 @@ ggplot(data = nat_data16, aes(map_id = id)) +
    xlim(c(112,157)) + 
   ylim(c(-44, -11)) + theme_map() + coord_equal()
 
+# all booths data missing
+ggplot(data = nat_data16, aes(map_id = id)) + 
+  geom_map(map = nat_map16, fill = "grey90", colour = "white") +
+  geom_point(data = all.booths.loc, aes(x = Longitude, y = Latitude, 
+                                        colour = winning),
+              size = 1, alpha = 0.3, inherit.aes = FALSE) +
+  scale_color_manual(values = c("#E7B800", "red", "blue"))+
+  xlim(c(112,157)) + 
+  ylim(c(-44, -11)) + theme_map() + coord_equal()
 
 # Download base maps from Google maps
 # at different zoom levels
@@ -85,7 +115,7 @@ map.pen.8 <- get_map(location="Penrith, Australia",
                      maptype = "terrain", crop=FALSE,
                      zoom=8)
 
-map.wah.12 <- get_map(location="Manly, Australia",
+map.wah.12 <- get_map(location="Balgowlah, Australia",
                      source= "google",
                      maptype = "terrain", crop=FALSE,
                      zoom=12)
@@ -129,7 +159,7 @@ ggmap(map.pen.9) +
                data = subset(nat_map16, elect_div == "MACQUARIE")) +
   theme_map() + coord_equal() + 
   scale_x_continuous(limits = c(149.9,151.5), expand = c(0, 0)) + 
-  scale_y_continuous(limits = c(-34, -33), expand = c(0, 0))
+  scale_y_continuous(limits = c(-34, -32.9), expand = c(0, 0))
 
 # using AEC shapfile
 # Leading party per booth - two party preferred
@@ -151,8 +181,8 @@ wah.win.plot <- ggmap(map.wah.12) +
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
-  scale_x_continuous(limits = c(151.155,151.35), expand = c(0, 0)) + 
-  scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
+  scale_x_continuous(limits = c(151.15,151.35), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.89, -33.73), expand = c(0, 0))
 
 
 # Swing by booth
@@ -184,8 +214,8 @@ wah.swing.plot <- ggmap(map.wah.12) +
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
-   scale_x_continuous(limits = c(151.155,151.35), expand = c(0, 0)) + 
-   scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
+  scale_x_continuous(limits = c(151.15,151.35), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.89, -33.73), expand = c(0, 0))
 
 ################################################################################
 # saving out plots
