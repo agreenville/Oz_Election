@@ -129,12 +129,12 @@ GetBooth2CP <- function(seatofinterest)
   
   seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
   
-  if(seatofinterest=="Macnamara"){
-    seatID<- which(seattxt2016=="Melbourne Ports")
-  } else
-  {
+  # if(seatofinterest=="Macnamara"){
+  #   seatID<- which(seattxt2016=="Melbourne Ports")
+  # } else
+  # {
     SeatID <- which(seattxt2016==seatofinterest)
-  }
+  #}
   # from 2019 Melb Ports is named Macnamara, Check for Batman too?
   
   seat2016 <- seat.links2016[SeatID]  
