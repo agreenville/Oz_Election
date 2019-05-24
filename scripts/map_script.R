@@ -75,7 +75,7 @@ all.booths <- read.csv("data/HouseTppByPollingPlaceDownload-24310.csv", header =
 
 all.booths.loc <- all.booths %>% inner_join(stns, by = 'PollingPlaceID') %>%
    mutate(winning = ifelse(Liberal.National.Coalition.Percentage == 0, 
-    "Ind",      
+    NA,      
      ifelse(Liberal.National.Coalition.Percentage > Australian.Labor.Party.Percentage, "LNP", "Labor" )
    ))
      
@@ -94,7 +94,7 @@ ggplot(data = nat_data16, aes(map_id = id)) +
   geom_point(data = all.booths.loc, aes(x = Longitude, y = Latitude, 
                                         colour = winning),
               size = 1, alpha = 0.3, inherit.aes = FALSE) +
-  scale_color_manual(values = c("#E7B800", "red", "blue"))+
+  scale_color_manual(values = c( "red","blue","#E7B800"))+
   xlim(c(112,157)) + 
   ylim(c(-44, -11)) + theme_map() + coord_equal()
 
