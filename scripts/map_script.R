@@ -151,7 +151,7 @@ wah.win.plot <- ggmap(map.wah.12) +
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
-  scale_x_continuous(limits = c(151.155,151.4), expand = c(0, 0)) + 
+  scale_x_continuous(limits = c(151.155,151.35), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
 
 
@@ -184,7 +184,7 @@ wah.swing.plot <- ggmap(map.wah.12) +
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
-   scale_x_continuous(limits = c(151.155,151.4), expand = c(0, 0)) + 
+   scale_x_continuous(limits = c(151.155,151.35), expand = c(0, 0)) + 
    scale_y_continuous(limits = c(-33.89, -33.74), expand = c(0, 0))
 
 ################################################################################
@@ -195,10 +195,10 @@ wah.swing.plot <- ggmap(map.wah.12) +
 # 
 # ggsave(filename = "output/macq-swing.png", plot = macq.swing.plot,
 #        dpi=300)
-
+# 
 # ggsave(filename = "output/wah-win.png", plot = wah.win.plot,
 #               dpi=300)
-# 
+
 # ggsave(filename = "output/wah-swing.png", plot = wah.swing.plot,
 #        dpi=300)
 
