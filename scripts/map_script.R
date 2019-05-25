@@ -78,6 +78,15 @@ all.booths.loc <- all.booths %>% inner_join(stns, by = 'PollingPlaceID') %>%
     NA,      
      ifelse(Liberal.National.Coalition.Percentage > Australian.Labor.Party.Percentage, "LNP", "Labor" )
    ))
+
+# Banks
+banks <- cp2.all.booths[["Banks"]] %>% inner_join(stns, by = c("PollingPlace" = "PollingPlaceNm")) %>%
+  mutate_at(c('COLEMAN%', 'GAMBIAN%', 'Swing'), as.numeric) %>%
+  filter(DivisionNm=='Banks') %>%
+  mutate(winning = ifelse(`COLEMAN%` > `GAMBIAN%`, "LNP", "Labor" )) %>%
+  mutate(swing.to = ifelse(Swing<0, "Labor", "LNP")) %>%
+  mutate(swing.abs = abs(Swing))
+
      
      
 # viewing boundaries for Australia from package data
@@ -120,12 +129,17 @@ map.wah.12 <- get_map(location="Balgowlah, Australia",
                      maptype = "terrain", crop=FALSE,
                      zoom=12)
 
+map.banks.12 <- get_map(location="PeakHurst, Australia",
+                      source= "google",
+                      maptype = "terrain", crop=FALSE,
+                      zoom=12)
 
 # View maps
 ggmap(map.pen.10)
 ggmap(map.pen.9)
 ggmap(map.pen.8)
 ggmap(map.wah.12)
+ggmap(map.banks.12)
 
 # Convert for plotting in ggplt
 map.pen.data.9 <- ggmap(map.pen.9)
@@ -172,6 +186,16 @@ macq.win.plot <- ggmap(map.pen.8) +
   scale_x_continuous(limits = c(149.9,151.5), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-34, -32.9), expand = c(0, 0))
 
+banks.win.plot <- ggmap(map.banks.12) +
+  geom_point(data = banks, aes(x = Longitude, y = Latitude, colour=winning),
+             size = 2, alpha = 1, inherit.aes = FALSE) +
+  geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
+               data = fortify(election.bound[election.bound$Elect_div=="Banks",])) +
+  theme_map() + coord_equal()  +
+  scale_x_continuous(limits = c(150.9,151.15), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-34.01, -33.92), expand = c(0, 0))
+
+
 # using AEC shapfile
 # Leading party per booth - two party preferred
 wah.win.plot <- ggmap(map.wah.12) +
@@ -217,6 +241,16 @@ wah.swing.plot <- ggmap(map.wah.12) +
   scale_x_continuous(limits = c(151.15,151.35), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-33.89, -33.73), expand = c(0, 0))
 
+banks.swing.plot <- ggmap(map.banks.12) +
+  geom_point(data = banks, aes(x = Longitude, y = Latitude, colour=swing.to),
+             size = (banks$swing.abs)/2, alpha = 0.5, inherit.aes = FALSE) +
+  #  scale_color_manual(values = c("#E7B800", "blue"))+
+  geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
+               data = fortify(election.bound[election.bound$Elect_div=="Banks",])) +
+  theme_map() + coord_equal() + 
+  scale_x_continuous(limits = c(150.9,151.15), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-34.01, -33.92), expand = c(0, 0))
+
 ################################################################################
 # saving out plots
 ###############################################################################
@@ -231,4 +265,12 @@ wah.swing.plot <- ggmap(map.wah.12) +
 
 # ggsave(filename = "output/wah-swing.png", plot = wah.swing.plot,
 #        dpi=300)
+
+# 
+# ggsave(filename = "output/banks-win.png", plot = banks.win.plot,
+#               dpi=300)
+# 
+# ggsave(filename = "output/banks-swing.png", plot = banks.swing.plot,
+#        dpi=300)
+
 
