@@ -98,7 +98,7 @@ ggplot(data = nat_data16, aes(map_id = id)) +
   ylim(c(-44, -11)) + theme_map() + coord_equal()
 
 # all booths data missing
-ggplot(data = nat_data16, aes(map_id = id)) + 
+all.booths.plot <- ggplot(data = nat_data16, aes(map_id = id)) + 
   geom_map(map = nat_map16, fill = "grey90", colour = "white") +
   geom_point(data = all.booths.loc, aes(x = Longitude, y = Latitude, 
                                         colour = winning),
@@ -133,6 +133,8 @@ map.banks.12 <- get_map(location="PeakHurst, Australia",
                       source= "google",
                       maptype = "terrain", crop=FALSE,
                       zoom=12)
+# for saving R objects
+#save(x, y, file = "xy.RData")
 
 # View maps
 ggmap(map.pen.10)
@@ -273,4 +275,5 @@ banks.swing.plot <- ggmap(map.banks.12) +
 # ggsave(filename = "output/banks-swing.png", plot = banks.swing.plot,
 #        dpi=300)
 
-
+# ggsave(filename = "output/allBooths-win.png", plot = all.booths.plot,
+#        dpi=300)
