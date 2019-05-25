@@ -51,12 +51,12 @@ GetBoothFP <- function(seatofinterest, partyofinterest)
   
   seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
   
-  if(seatofinterest=="Macnamara"){
-    seatID<- which(seattxt2016=="Melbourne Ports")
-  } else
-  {
+  # if(seatofinterest=="Macnamara"){
+  #   seatID<- which(seattxt2016=="Melbourne Ports")
+  # } else
+  # {
     SeatID <- which(seattxt2016==seatofinterest)
-  }
+  # }
   # from 2019 Melb Ports is named Macnamara, Check for Batman too.
   
   seat2016 <- seat.links2016[SeatID]  
@@ -70,7 +70,10 @@ GetBoothFP <- function(seatofinterest, partyofinterest)
   
   # only take one of each (the TCP results are also in ther with the same links )
   firstprefs.links2016 <- unique(firstprefs.links2016)
+  # remove 1st link as it's the national link
+  firstprefs.links2016 <- firstprefs.links2016[-1]
   pollingplace.names2016 <- unique(pollingplace.names2016)
+  pollingplace.names2016 <- pollingplace.names2016[-1]
   
   npollingplaces <- length(pollingplace.names2016)  # number of polling places in the seat
   
@@ -178,12 +181,12 @@ GetAllCP <- function(seatofinterest)
   
   seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
   
-  if(seatofinterest=="Macnamara"){
-    seatID<- which(seattxt2016=="Melbourne Ports")
-  } else
-  {
+  # if(seatofinterest=="Macnamara"){
+  #   seatID<- which(seattxt2016=="Melbourne Ports")
+  # } else
+  # {
     SeatID <- which(seattxt2016==seatofinterest)
-  }
+  # }
   # from 2019 Melb Ports is named Macnamara, Check for Batman too?
   
   seat2016 <- seat.links2016[SeatID]  
@@ -227,12 +230,12 @@ Get2CP <- function(seatofinterest)
   
   seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
   
-  if(seatofinterest=="Macnamara"){
-    seatID<- which(seattxt2016=="Melbourne Ports")
-  } else
-  {
+  # if(seatofinterest=="Macnamara"){
+  #   seatID<- which(seattxt2016=="Melbourne Ports")
+  # } else
+  # {
     SeatID <- which(seattxt2016==seatofinterest)
-  }
+  # }
   # from 2019 Melb Ports is named Macnamara, Check for Batman too?
   
   seat2016 <- seat.links2016[SeatID]  
@@ -260,15 +263,25 @@ Get2CP <- function(seatofinterest)
 ######################################################################################################################################################################
 #Usage
 ######################################################################################################################################################################
-cp2.warringah.24 <- GetBooth2CP("Warringah")
+# Note AEC do not use consistent party names across seats
+# Run GetAllCP(seatofinterest) to get party names.
 
+# Get 2-party preferred and first preference votes per party
+Get2CP("Macquarie")
+GetAllCP("Macquarie")
+
+# Get 2-party preferred by booth
+cp2.warringah.24 <- GetBooth2CP("Warringah")
 
 cp2.Macquarie.24 <- GetBooth2CP("Macquarie")
 
+# Get first preference by booth
 booth.macq <- GetBoothFP("Macquarie", "Labor")
 
-Get2CP("Macquarie")
-GetAllCP("Macquarie")
+GetBoothFP("Maranoa", "Liberal National Party of Queensland")
+
+
+
 
 # Some options you might like:
 
