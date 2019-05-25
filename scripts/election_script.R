@@ -1,7 +1,7 @@
 ##############################################################################################################################
-# Michael McCarthy Election results
-#
-# Link to 2016 election results
+# Michael McCarthy Election results functions
+# Modified by Aaron Greenville 2019
+# 
 ##############################################################################################################################
 
 
@@ -13,21 +13,20 @@ suppressWarnings(library(rvest))
 # Functions
 #########################################################################################
 
-# first preference vote for seat and party of interest
-
 # set websites from AEC
 
+# 2019 election link
 seatsite2016="https://tallyroom.aec.gov.au/HouseDivisionalResults-24310.htm"
-
-#https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
-
 prefix2016 <- "https://tallyroom.aec.gov.au/"
-  
-#  "https://results.aec.gov.au/20499/Website/"
 
+# 2016 election link
+# seatsite2016 = https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
+# prefix2016 <-  "https://results.aec.gov.au/20499/Website/"
 
+##################################################################################################################
 # First preference vote per booth
 # 2019 AEC didn't provide this data on the web
+############################################################################################################
 GetBoothFP <- function(seatofinterest, partyofinterest)
 {
   # re-code thepartyofinterest to conform with AEC names
@@ -112,8 +111,10 @@ GetBoothFP <- function(seatofinterest, partyofinterest)
   return(booth.data)
 }
 
+##################################################################################################
 # two-party prefered by booth for seat of interest function
 # 2019 election AEC didn't pubish these results on the website
+##################################################################################################
 GetBooth2CP <- function(seatofinterest)
 {
   #seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
@@ -161,8 +162,9 @@ GetBooth2CP <- function(seatofinterest)
   return(twocp2016)
 }
 
-
+############################################################################################
 # returns primary vote for all candidates at a seat
+######################################################################################
 GetAllCP <- function(seatofinterest)
 {
   #seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
@@ -198,20 +200,12 @@ GetAllCP <- function(seatofinterest)
   
   twocp2016 <- twocp2016[[1]]  # there should be only one element - get that table
   
-  # # Get surnames of candidate
-  # Cand1 <- sapply(strsplit(colnames(twocp2016)[3], ","), "[", 1)
-  # Cand2 <- sapply(strsplit(colnames(twocp2016)[5], ","), "[", 1)
-  # 
-  # twocp2016 <- twocp2016[2:length(twocp2016$`Polling place`), ] # chop off the header line
-  # 
-  # # rename the columns to something more succinct
-  # colnames(twocp2016) <- c("PollingPlace", "Formal", paste(Cand1,"Votes",sep=""), paste(Cand1,"%",sep=""), paste(Cand2,"Votes",sep=""), paste(Cand2,"%",sep=""), "Swing")
-  # 
   return(twocp2016)
 }
 
+####################################################################################
 # returns 2-party preferred table for a seat
-
+###################################################################################
 Get2CP <- function(seatofinterest)
 {
   #seatsite2016="https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
@@ -226,9 +220,7 @@ Get2CP <- function(seatofinterest)
     html_nodes(".filterDivision a") %>% # get the info for each division
     html_attr("href")
   
-  #prefix2016 <- "https://results.aec.gov.au/20499/Website/"
-  
-  seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
+   seat.links2016 <- paste(prefix2016, seat.links2016, sep="")
   
   # if(seatofinterest=="Macnamara"){
   #   seatID<- which(seattxt2016=="Melbourne Ports")
@@ -247,15 +239,6 @@ Get2CP <- function(seatofinterest)
   
   twocp2016 <- twocp2016[[1]]  # there should be only one element - get that table
   
-  # # Get surnames of candidate
-  # Cand1 <- sapply(strsplit(colnames(twocp2016)[3], ","), "[", 1)
-  # Cand2 <- sapply(strsplit(colnames(twocp2016)[5], ","), "[", 1)
-  # 
-  # twocp2016 <- twocp2016[2:length(twocp2016$`Polling place`), ] # chop off the header line
-  # 
-  # # rename the columns to something more succinct
-  # colnames(twocp2016) <- c("PollingPlace", "Formal", paste(Cand1,"Votes",sep=""), paste(Cand1,"%",sep=""), paste(Cand2,"Votes",sep=""), paste(Cand2,"%",sep=""), "Swing")
-  # 
   return(twocp2016)
 }
 
@@ -272,16 +255,12 @@ GetAllCP("Macquarie")
 
 # Get 2-party preferred by booth
 cp2.warringah.24 <- GetBooth2CP("Warringah")
-
 cp2.Macquarie.24 <- GetBooth2CP("Macquarie")
 
 # Get first preference by booth
 booth.macq <- GetBoothFP("Macquarie", "Labor")
 
 GetBoothFP("Maranoa", "Liberal National Party of Queensland")
-
-
-
 
 # Some options you might like:
 
