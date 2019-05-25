@@ -6,7 +6,7 @@
 ###############################################################################
 
 # load packages
-library(eechidna)
+library(eechidna) # has spatial data of interest, but based on 2016
 library(ggplot2)
 library(ggthemes)
 
@@ -37,7 +37,7 @@ election.bound <- readOGR(dsn="data/national-esri-fe2019/COM_ELB_region.shp", la
 
 
 # Join election results with polling place data
-# not cp2.Macquarie is from Michaels election script
+# note cp2.Macquarie is from Michaels election script
 macq <- inner_join(cp2.Macquarie.24, stns, by = c("PollingPlace" = "PollingPlaceNm"))
 
 wah <- cp2.warringah.24 %>% inner_join(stns, by = c("PollingPlace" = "PollingPlaceNm")) %>%
@@ -71,6 +71,7 @@ for(i in 1:length(seat.names)){
 }
 names(cp2.all.booths) <- seat.names
 
+# AEC download data. Some missing seats
 all.booths <- read.csv("data/HouseTppByPollingPlaceDownload-24310.csv", header = TRUE)
 
 all.booths.loc <- all.booths %>% inner_join(stns, by = 'PollingPlaceID') %>%
@@ -79,7 +80,7 @@ all.booths.loc <- all.booths %>% inner_join(stns, by = 'PollingPlaceID') %>%
      ifelse(Liberal.National.Coalition.Percentage > Australian.Labor.Party.Percentage, "LNP", "Labor" )
    ))
 
-# Banks
+# Banks data
 banks <- cp2.all.booths[["Banks"]] %>% inner_join(stns, by = c("PollingPlace" = "PollingPlaceNm")) %>%
   mutate_at(c('COLEMAN%', 'GAMBIAN%', 'Swing'), as.numeric) %>%
   filter(DivisionNm=='Banks') %>%
@@ -96,6 +97,7 @@ ggplot(data = nat_data16, aes(map_id = id)) +
     colour = "red", size = 1, alpha = 0.3, inherit.aes = FALSE) +
    xlim(c(112,157)) + 
   ylim(c(-44, -11)) + theme_map() + coord_equal()
+
 
 # all booths data missing
 all.booths.plot <- ggplot(data = nat_data16, aes(map_id = id)) + 
@@ -181,7 +183,7 @@ ggmap(map.pen.9) +
 # Leading party per booth - two party preferred
 macq.win.plot <- ggmap(map.pen.8) +
   geom_point(data = macq, aes(x = Longitude, y = Latitude, colour=winning),
-             size = 2, alpha = 1, inherit.aes = FALSE) +
+             size = 2, alpha = 1, inherit.aes = FALSE) #+
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Macquarie",])) +
   theme_map() + coord_equal() + 
