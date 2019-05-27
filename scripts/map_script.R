@@ -47,6 +47,14 @@ wah <- cp2.warringah.24 %>% inner_join(stns, by = c("PollingPlace" = "PollingPla
         mutate(swing.to = ifelse(Swing<0, "Ind", "LNP")) %>%
         mutate(swing.abs = abs(Swing))
 
+rob <- cp2.Robertson.27 %>% inner_join(stns, by = c("PollingPlace" = "PollingPlaceNm")) %>%
+  mutate_at(c('WICKS%', 'CHARLTON%', 'Swing'), as.numeric) %>%
+  filter(DivisionNm=='Robertson') %>%
+  mutate(winning = ifelse(`WICKS%` > `CHARLTON%`, "LNP", "Labor" )) %>%
+  mutate(swing.to = ifelse(Swing<0, "Labor", "LNP")) %>%
+  mutate(swing.abs = abs(Swing))
+
+
 
 # convert to numeric
 macq$`TEMPLEMAN%` <- as.numeric(macq$`TEMPLEMAN%`)
@@ -135,6 +143,11 @@ map.banks.12 <- get_map(location="PeakHurst, Australia",
                       source= "google",
                       maptype = "terrain", crop=FALSE,
                       zoom=12)
+
+map.rob.10 <- get_map(location="Calga, Australia",
+                        source= "google",
+                        maptype = "terrain", crop=FALSE,
+                        zoom=10)
 # for saving R objects
 #save(x, y, file = "xy.RData")
 
@@ -144,6 +157,7 @@ ggmap(map.pen.9)
 ggmap(map.pen.8)
 ggmap(map.wah.12)
 ggmap(map.banks.12)
+ggmap(map.rob.10)
 
 # Convert for plotting in ggplt
 map.pen.data.9 <- ggmap(map.pen.9)
@@ -212,6 +226,16 @@ wah.win.plot <- ggmap(map.wah.12) +
   scale_x_continuous(limits = c(151.15,151.35), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-33.89, -33.73), expand = c(0, 0))
 
+# using AEC shapfile
+# Leading party per booth - two party preferred
+rob.win.plot <- ggmap(map.rob.10) +
+  geom_point(data = rob, aes(x = Longitude, y = Latitude, colour=winning),
+             size = 3, alpha = 1, inherit.aes = FALSE) +
+  geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
+               data = fortify(election.bound[election.bound$Elect_div=="Robertson",])) +
+  theme_map() + coord_equal() + 
+  scale_x_continuous(limits = c(150.95,151.48), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.6, -33.1), expand = c(0, 0))
 
 # Swing by booth
 # Using eechidna package election boundaries
@@ -255,6 +279,16 @@ banks.swing.plot <- ggmap(map.banks.12) +
   scale_x_continuous(limits = c(150.9,151.15), expand = c(0, 0)) + 
   scale_y_continuous(limits = c(-34.01, -33.92), expand = c(0, 0))
 
+rob.swing.plot <- ggmap(map.rob.10) +
+  geom_point(data = rob, aes(x = Longitude, y = Latitude, colour=swing.to),
+             size = (rob$swing.abs)/2, alpha = 0.5, inherit.aes = FALSE) +
+  #  scale_color_manual(values = c("#E7B800", "blue"))+
+  geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
+               data = fortify(election.bound[election.bound$Elect_div=="Robertson",])) +
+  theme_map() + coord_equal() + 
+  scale_x_continuous(limits = c(150.95,151.48), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(-33.6, -33.1), expand = c(0, 0))
+
 ################################################################################
 # saving out plots
 ###############################################################################
@@ -279,3 +313,13 @@ banks.swing.plot <- ggmap(map.banks.12) +
 
 # ggsave(filename = "output/allBooths-win.png", plot = all.booths.plot,
 #        dpi=300)
+# 
+# ggsave(filename = "output/rob-win.png", plot = rob.win.plot,
+#               dpi=300)
+# 
+# ggsave(filename = "output/rob-swing.png", plot = rob.swing.plot,
+#        dpi=300)
+
+
+
+

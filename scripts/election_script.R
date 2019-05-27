@@ -257,6 +257,8 @@ GetAllCP("Macquarie")
 cp2.warringah.24 <- GetBooth2CP("Warringah")
 cp2.Macquarie.24 <- GetBooth2CP("Macquarie")
 
+cp2.Robertson.27 <- GetBooth2CP("Robertson")
+
 # Get first preference by booth
 booth.macq <- GetBoothFP("Macquarie", "Labor")
 
