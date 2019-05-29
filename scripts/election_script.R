@@ -257,6 +257,8 @@ GetAllCP("Macquarie")
 cp2.warringah.24 <- GetBooth2CP("Warringah")
 cp2.Macquarie.24 <- GetBooth2CP("Macquarie")
 
+cp2.Macquarie.29 <- GetBooth2CP("Macquarie")
+
 cp2.Robertson.27 <- GetBooth2CP("Robertson")
 
 # Get first preference by booth
@@ -270,3 +272,6 @@ GetBoothFP("Maranoa", "Liberal National Party of Queensland")
 # GetBoothFP("Wills", "The Greens")
 # GetBoothFP("Indi", "Liberal")
 GetBoothFP("Warringah", "Liberal")
+
+# for saving R objects
+# save(cp2.Macquarie.29, file = "data/Macq20190529.RData")
