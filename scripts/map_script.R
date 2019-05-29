@@ -38,7 +38,7 @@ election.bound <- readOGR(dsn="data/national-esri-fe2019/COM_ELB_region.shp", la
 
 # Join election results with polling place data
 # note cp2.Macquarie is from Michaels election script
-macq <- inner_join(cp2.Macquarie.24, stns, by = c("PollingPlace" = "PollingPlaceNm"))
+#macq <- inner_join(cp2.Macquarie.24, stns, by = c("PollingPlace" = "PollingPlaceNm"))
 
 wah <- cp2.warringah.24 %>% inner_join(stns, by = c("PollingPlace" = "PollingPlaceNm")) %>%
          mutate_at(c('ABBOTT%', 'STEGGALL%', 'Swing'), as.numeric) %>%
@@ -54,19 +54,26 @@ rob <- cp2.Robertson.27 %>% inner_join(stns, by = c("PollingPlace" = "PollingPla
   mutate(swing.to = ifelse(Swing<0, "Labor", "LNP")) %>%
   mutate(swing.abs = abs(Swing))
 
-
-
-# convert to numeric
-macq$`TEMPLEMAN%` <- as.numeric(macq$`TEMPLEMAN%`)
-macq$`RICHARDS%` <- as.numeric(macq$`RICHARDS%`)
-macq$Swing <- as.numeric(macq$Swing)
-
-# filter for macquarie and add field for who is in the lead
-# and the swing to party in the lead
-macq <- macq %>% filter(DivisionNm =="Macquarie") %>% 
-    mutate(winning = ifelse(`TEMPLEMAN%` > `RICHARDS%` , "Labor", "LNP" )) %>%
+# macq update
+macq <- cp2.Macquarie.29 %>% inner_join(stns, by = c("PollingPlace" = "PollingPlaceNm")) %>%
+  mutate_at(c('TEMPLEMAN%', 'RICHARDS%', 'Swing'), as.numeric) %>%
+  filter(DivisionNm=='Macquarie') %>%
+  mutate(winning = ifelse(`TEMPLEMAN%` > `RICHARDS%`, "Labor", "LNP" )) %>%
   mutate(swing.to = ifelse(Swing<0, "LNP", "Labor")) %>%
   mutate(swing.abs = abs(Swing))
+
+
+# # convert to numeric
+# macq$`TEMPLEMAN%` <- as.numeric(macq$`TEMPLEMAN%`)
+# macq$`RICHARDS%` <- as.numeric(macq$`RICHARDS%`)
+# macq$Swing <- as.numeric(macq$Swing)
+# 
+# # filter for macquarie and add field for who is in the lead
+# # and the swing to party in the lead
+# macq <- macq %>% filter(DivisionNm =="Macquarie") %>% 
+#     mutate(winning = ifelse(`TEMPLEMAN%` > `RICHARDS%` , "Labor", "LNP" )) %>%
+#   mutate(swing.to = ifelse(Swing<0, "LNP", "Labor")) %>%
+#   mutate(swing.abs = abs(Swing))
 
 # all booths
 # create list of seats
@@ -149,7 +156,8 @@ map.rob.10 <- get_map(location="Calga, Australia",
                         maptype = "terrain", crop=FALSE,
                         zoom=10)
 # for saving R objects
-#save(x, y, file = "xy.RData")
+# save(map.pen.8, map.pen.9,map.pen.10, file = "data/Macq_maps.RData")
+# save(map.wah.12, map.banks.12,map.rob.10, file = "data/other_maps.RData")
 
 # View maps
 ggmap(map.pen.10)
@@ -197,7 +205,7 @@ ggmap(map.pen.9) +
 # Leading party per booth - two party preferred
 macq.win.plot <- ggmap(map.pen.8) +
   geom_point(data = macq, aes(x = Longitude, y = Latitude, colour=winning),
-             size = 2, alpha = 1, inherit.aes = FALSE) #+
+             size = 3, alpha = 1, inherit.aes = FALSE) +
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Macquarie",])) +
   theme_map() + coord_equal() + 
@@ -292,12 +300,12 @@ rob.swing.plot <- ggmap(map.rob.10) +
 ################################################################################
 # saving out plots
 ###############################################################################
-# ggsave(filename = "output/macq-win.png", plot = macq.win.plot,
+# ggsave(filename = "output/macq29-win.png", plot = macq.win.plot,
 #        dpi=300)
 # 
-# ggsave(filename = "output/macq-swing.png", plot = macq.swing.plot,
+# ggsave(filename = "output/macq29-swing.png", plot = macq.swing.plot,
 #        dpi=300)
-# 
+
 # ggsave(filename = "output/wah-win.png", plot = wah.win.plot,
 #               dpi=300)
 
