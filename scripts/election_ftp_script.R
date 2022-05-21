@@ -105,9 +105,13 @@ file.list <- feed_list_files(url.2022) %>%
 # Download and unzip latest file  
 feed.2022 <- feed_get_messages(url.2022, file.list,
                                    destpath = "data-raw")
+# Process xml into a list
+house.2022 <- read_results_house(feed.2022[47])
+house.fp.2022 <- read_preload_house_fp(feed.2022[47])
+
 ### pick seats of interest ####
 #*********************************************************************#
-# Process xml into a list
+# Process list
 
 macq.tp <- tp.seat("Macquarie")
 
@@ -142,7 +146,7 @@ koo <- kooyong.tp %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceI
 # Leading party per booth - two party preferred
 macq.win.plot <- ggmap(map.pen.8) +
   geom_point(data = macq, aes(x = Longitude, y = Latitude, colour=affiliation_name),
-             size = 3, alpha = 1, inherit.aes = FALSE) +
+             size = 1.5, alpha = 1, inherit.aes = FALSE) +
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Macquarie",])) +
   theme_map() + coord_equal() + 
@@ -152,7 +156,8 @@ macq.win.plot <- ggmap(map.pen.8) +
 
 warr.win.plot <- ggmap(map.wah.12) +
   geom_point(data = warr, aes(x = Longitude, y = Latitude, colour=candidate_name),
-             size = 3, alpha = 1, inherit.aes = FALSE) +
+             size = 1.5, alpha = 1, inherit.aes = FALSE) +
+  scale_color_manual(values=c("blue", "#E69F00"))+
   geom_polygon(aes(x = long, y =lat), colour="black", fill=NA, size= 1,
                data = fortify(election.bound[election.bound$Elect_div=="Warringah",])) +
   theme_map() + coord_equal() + 
@@ -162,7 +167,7 @@ warr.win.plot <- ggmap(map.wah.12) +
 went.win.plot <- ggmap(map.went.12) +
   geom_point(data = went, aes(x = Longitude, y = Latitude,
                               colour=candidate_name),
-             size = 3, alpha = 1, inherit.aes = FALSE) +
+             size = 1.5, alpha = 1, inherit.aes = FALSE) +
   scale_color_manual(values=c("blue", "#E69F00"))+
   geom_polygon(aes(x = long, y =lat), colour="black",
                fill=NA, size= 1,
@@ -175,7 +180,7 @@ went.win.plot <- ggmap(map.went.12) +
 koo.win.plot <- ggmap(map.koo.12) +
   geom_point(data = koo, aes(x = Longitude, y = Latitude,
                               colour=candidate_name),
-             size = 3, alpha = 1, inherit.aes = FALSE) +
+             size = 1.5, alpha = 1, inherit.aes = FALSE) +
   scale_color_manual(values=c("blue", "#E69F00"))+
   geom_polygon(aes(x = long, y =lat), colour="black",
                fill=NA, size= 1,
@@ -187,26 +192,26 @@ koo.win.plot <- ggmap(map.koo.12) +
 #*****************************************************************************#
 #### saving out plots ####
 #*****************************************************************************#
-ggsave(filename = "output/macqTP-20220521-9.png", plot = macq.win.plot,
+ggsave(filename = "output/macqTP-20220521-12.png", plot = macq.win.plot,
        dpi=300,
        width = 150,
        height = 100,
        units = "mm")
 
 
-ggsave(filename = "output/warrTP-20220521-9.png", plot = warr.win.plot,
+ggsave(filename = "output/warrTP-20220521-12.png", plot = warr.win.plot,
        dpi=300,
        width = 150,
        height = 100,
        units = "mm")
 
-ggsave(filename = "output/wentTP-20220521-9.png", plot = went.win.plot,
+ggsave(filename = "output/wentTP-20220521-12.png", plot = went.win.plot,
        dpi=300,
        width = 150,
        height = 100,
        units = "mm")
 
-ggsave(filename = "output/kooTP-20220521-9.png", plot = koo.win.plot,
+ggsave(filename = "output/kooTP-20220521-12.png", plot = koo.win.plot,
        dpi=300,
        width = 150,
        height = 100,
