@@ -15,9 +15,17 @@ suppressWarnings(library(rvest))
 
 # set websites from AEC
 
-# 2019 election link
-seatsite2016="https://tallyroom.aec.gov.au/HouseDivisionalResults-24310.htm"
+# 2022 election link
+seatsite2016="https://tallyroom.aec.gov.au/HouseDivisionalResults-27966.htm"
+#https://tallyroom.aec.gov.au/HouseDivisionalResults-24310.htm"
 prefix2016 <- "https://tallyroom.aec.gov.au/"
+#https://tally" # "https://tallyroom.aec.gov.au/"
+
+# 2019 election link
+seatsite2016="https://results.aec.gov.au/24310/Website/HouseDivisionalResults-24310.htm"
+#https://tallyroom.aec.gov.au/HouseDivisionalResults-24310.htm"
+prefix2016 <- "https://results.aec.gov.au/24310/Website/"
+#https://tally" # "https://tallyroom.aec.gov.au/"
 
 # 2016 election link
 # seatsite2016 = https://results.aec.gov.au/20499/Website/HouseDivisionalResults-20499.htm" # 2016 seats
@@ -254,12 +262,12 @@ Get2CP("Macquarie")
 GetAllCP("Macquarie")
 
 # Get 2-party preferred by booth
-cp2.warringah.24 <- GetBooth2CP("Warringah")
-cp2.Macquarie.24 <- GetBooth2CP("Macquarie")
+# cp2.warringah.24 <- GetBooth2CP("Warringah")
+# cp2.Macquarie.24 <- GetBooth2CP("Macquarie")
+# cp2.Macquarie.29 <- GetBooth2CP("Macquarie")
+# cp2.Robertson.27 <- GetBooth2CP("Robertson")
 
-cp2.Macquarie.29 <- GetBooth2CP("Macquarie")
-
-cp2.Robertson.27 <- GetBooth2CP("Robertson")
+cp2.Macquarie <- GetBooth2CP("Macquarie")
 
 # Get first preference by booth
 booth.macq <- GetBoothFP("Macquarie", "Labor")
