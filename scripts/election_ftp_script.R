@@ -112,33 +112,24 @@ house.fp.2022 <- read_preload_house_fp(feed.2022[47])
 ### pick seats of interest ####
 #*********************************************************************#
 # Process list
-
-macq.tp <- tp.seat("Macquarie")
-
-warr.tp <- tp.seat("Warringah")
-
-went.tp <- tp.seat("Wentworth")
-
-kooyong.tp <- tp.seat("Kooyong")
-
 # Join election results with polling place data
 # macq update
-macq <- macq.tp %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
+macq <- tp.seat("Macquarie") %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
   group_by(pollingplace_id) %>%
   filter(votes==max(votes))
 
 # Warringh update
-warr <- warr.tp %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
+warr <- tp.seat("Warringah") %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
   group_by(pollingplace_id) %>%
   filter(votes==max(votes))
 
 # Wentworth update
-went <- went.tp %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
+went <- tp.seat("Wentworth") %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
   group_by(pollingplace_id) %>%
   filter(votes==max(votes))
 
 # Kooyong update
-koo <- kooyong.tp %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
+koo <- tp.seat("Kooyong") %>% inner_join(stns, by = c("pollingplace_id" = "PollingPlaceID")) %>%
   group_by(pollingplace_id) %>%
   filter(votes==max(votes))
 
